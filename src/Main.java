@@ -16,7 +16,7 @@ public class Main {
         String usuario = "tahabakk@hotmail.com";//sc.nextLine();
         System.out.println("-----------------------");
         System.out.println("Introduce la pass:");
-        String pass = "Taha@bakk12";//sc.nextLine();
+        String pass = "";//sc.nextLine();
         System.out.println("-----------------------");
         System.out.println("Introduce el correo que recibira el mail:");
         String rutaenviar = "tahabakk@hotmail.com";//sc.nextLine();
