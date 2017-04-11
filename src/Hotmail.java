@@ -22,16 +22,12 @@ public class Hotmail {
         MimeMessage genMailMessage;
         try {
         mailProperties = System.getProperties();
-        // port de hotmail
-        mailProperties.put("mail.smtp.port", "587");
+        mailProperties.put("mail.smtp.port", "587");//le ponemos el puerto del hotmail
+        mailProperties.put("mail.smtp.ssl.trust", "smtp.live.com");//se añade esta linia sino da errores con el protocolo ssl
+        mailProperties.setProperty("mail.host", "smtp.live.com");// configuracion para que funcione en hotmail
+        mailProperties.put("mail.smtp.auth", "true");// autentificacio
+        mailProperties.put("mail.smtp.starttls.enable", "true");// seguretat
 
-        // para hotmail hay que especificar el host en las propiedades ( con gmail no hace falta esta linea )
-        mailProperties.setProperty("mail.host", "smtp.live.com");
-
-        // autenticacio
-        mailProperties.put("mail.smtp.auth", "true");
-        // seguretat
-        mailProperties.put("mail.smtp.starttls.enable", "true");
         System.out.println("Mail Server Properties have been setup successfully..");
 
         mailSession = Session.getDefaultInstance( mailProperties, null);
@@ -41,18 +37,11 @@ public class Hotmail {
 
         // añadir email del destinatario en InternetAddress
         genMailMessage.addRecipient( Message.RecipientType.TO, new InternetAddress(correo) );
-        //genMailMessage.setSubject(titulo);
-
-            genMailMessage.setContent("asdasdasdasdasd", "text/html");
+        genMailMessage.setSubject(titulo);
+        genMailMessage.setFrom( new InternetAddress( correo ));
+        genMailMessage.setContent(textoEnviar, "text/html");
 
         System.out.println("Mail Session has been created successfully..");
-
-        /*Transport transport = mailSession.getTransport("smtps");
-        // añadir el correo hotmail y el pass de la cuenta de la que se enviara el correo
-        transport.connect("smtp.live.com",25,usuario,pass);
-        //transport.sendMessage( genMailMessage, genMailMessage.getAllRecipients() );
-        transport.sendMessage(genMailMessage, genMailMessage.getAllRecipients());
-        transport.close();*/
 
         Transport transport = mailSession.getTransport("smtp");
         transport.connect("smtp.live.com", usuario, pass );
@@ -64,4 +53,52 @@ public class Hotmail {
         }
     }
 
+
+    public void mostrarMensajes(String usuario, String pass) {
+        try {
+            MimeMessage genMailMessage;
+            Properties mailProperties;
+            Session mailSession;
+
+            mailProperties = System.getProperties();
+            mailProperties.put("mail.smtp.port", "587");//le ponemos el puerto del hotmail
+            mailProperties.put("mail.smtp.ssl.trust", "smtp.live.com");//se añade esta linia sino da errores con el protocolo ssl
+            mailProperties.setProperty("mail.host", "smtp.live.com");// configuracion para que funcione en hotmail
+            mailProperties.put("mail.smtp.auth", "true");// autentificacio
+            mailProperties.put("mail.smtp.starttls.enable", "true");// seguretat
+
+            System.out.println("Mail Server Properties have been setup successfully..");
+
+            mailSession = Session.getDefaultInstance(mailProperties, null);
+            mailProperties.setProperty("mail.pop3s.port", "995");
+
+            Store store = mailSession.getStore("pop3s");
+
+            store.connect("pop3.live.com", 995, usuario, pass);
+
+            Folder emailFolder = store.getFolder("INBOX");
+            emailFolder.open(Folder.READ_ONLY);
+
+            Message[] messages = emailFolder.getMessages();
+            System.out.println("messages.length---" + messages.length);
+
+            // los 10 ultimos mensajes
+            for (int i = messages.length - 5; i < messages.length; i++) {
+                Message message = messages[i];
+                System.out.println("---------------------------------");
+                System.out.println("Email Number " + (i + 1));
+                System.out.println("Subject: " + message.getSubject());
+                System.out.println("From: " + message.getFrom()[0]);
+
+            }
+
+            emailFolder.close(false);
+            store.close();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
