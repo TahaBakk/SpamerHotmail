@@ -107,16 +107,6 @@ public class Hotmail {
             Message[] messages = emailFolder.getMessages();
             System.out.println("messages.length---" + messages.length);
 
-            // los 5 ultimos mensajes
-            /*for (int i = messages.length - 5; i < messages.length; i++) {
-                Message message = messages[i];
-                System.out.println("---------------------------------");
-                System.out.println("Email Number " + (i + 1));
-                System.out.println("Subject: " + message.getSubject());
-                System.out.println("From: " + message.getFrom()[0]);
-
-            }*/
-
             for (int i = 0, n = messages.length; i < n; i++) {
                 Message message = messages[i];
                 System.out.println("---------------------------------");
@@ -124,7 +114,6 @@ public class Hotmail {
                 System.out.println("Subject: " + message.getSubject());
                 System.out.println("From: " + message.getFrom()[0]);
                 System.out.println("Text: " + message.getContent().toString());
-                System.out.println("FLAG -> "+message.getFlags().toString());
 
             }
 

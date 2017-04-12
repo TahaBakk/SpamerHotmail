@@ -38,7 +38,9 @@ public class Main {
 
         //hotmail.mostrarMensajes(usuario,pass);
 
-
+        System.out.println("-----------------------");
+        System.out.println("Programa finalizado");
+        System.out.println("-----------------------");
 
     }
 
