@@ -16,7 +16,7 @@ import javax.mail.internet.*;
  */
 public class Hotmail {
 
-    public void generateAndSendHotmail(String correo, String usuario, String pass, String textoEnviar, String titulo) {
+    public void generateAndSendHotmail(String correo, String usuario, String pass, String textoEnviar, String titulo,String rutaFitxero) {
         Properties mailProperties;
         Session mailSession;
         MimeMessage genMailMessage;
@@ -39,7 +39,30 @@ public class Hotmail {
         genMailMessage.addRecipient( Message.RecipientType.TO, new InternetAddress(correo) );
         genMailMessage.setSubject(titulo);
         genMailMessage.setFrom( new InternetAddress( correo ));
-        genMailMessage.setContent(textoEnviar, "text/html");
+//--------------------------------------------------------------------------------------------
+            // Creamos un cuerpo del correo con ayuda de la clase BodyPart
+            BodyPart bp = new MimeBodyPart();
+            // Asignamos el texto del correo
+            bp.setText(textoEnviar);
+            // Creamos un multipart al correo
+            Multipart mp = new MimeMultipart();
+            // Agregamos el texto al cuerpo del correo mp
+            mp.addBodyPart(bp);
+            // Ahora el proceso para adjuntar el archivo
+            bp = new MimeBodyPart();
+            String fitxero = rutaFitxero;
+            DataSource fuente = new FileDataSource(fitxero);
+            bp.setDataHandler(new DataHandler(fuente));
+            bp.setFileName(fitxero);
+            mp.addBodyPart(bp);
+
+            // Asignamos al mensaje todas las partes que creamos anteriormente
+            //generateMailMessage.setContent(mp);
+            genMailMessage.setContent(mp, "text/html");
+
+//--------------------------------------------------------------------------------------------
+
+            //genMailMessage.setContent(textoEnviar, "text/html");
 
         System.out.println("Mail Session has been created successfully..");
 
@@ -47,6 +70,8 @@ public class Hotmail {
         transport.connect("smtp.live.com", usuario, pass );
         transport.sendMessage( genMailMessage, genMailMessage.getAllRecipients());
         transport.close();
+
+
 
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -82,13 +107,24 @@ public class Hotmail {
             Message[] messages = emailFolder.getMessages();
             System.out.println("messages.length---" + messages.length);
 
-            // los 10 ultimos mensajes
-            for (int i = messages.length - 5; i < messages.length; i++) {
+            // los 5 ultimos mensajes
+            /*for (int i = messages.length - 5; i < messages.length; i++) {
                 Message message = messages[i];
                 System.out.println("---------------------------------");
                 System.out.println("Email Number " + (i + 1));
                 System.out.println("Subject: " + message.getSubject());
                 System.out.println("From: " + message.getFrom()[0]);
+
+            }*/
+
+            for (int i = 0, n = messages.length; i < n; i++) {
+                Message message = messages[i];
+                System.out.println("---------------------------------");
+                System.out.println("Email Number " + (i + 1));
+                System.out.println("Subject: " + message.getSubject());
+                System.out.println("From: " + message.getFrom()[0]);
+                System.out.println("Text: " + message.getContent().toString());
+                System.out.println("FLAG -> "+message.getFlags().toString());
 
             }
 
@@ -97,6 +133,8 @@ public class Hotmail {
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

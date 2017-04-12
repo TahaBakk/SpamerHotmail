@@ -28,11 +28,13 @@ public class Main {
         System.out.println("Introduce el texto del mail");
         String textoEnviar =sc.nextLine();
         System.out.println("-----------------------");
+        System.out.println("Introduce la ruta del fitxero (puedes poner 'taha.txt')");
+        String rutaFitxero =sc.nextLine();
         System.out.println("-----------------------");
         System.out.println("Programa finalizado");
         System.out.println("-----------------------");
 
-        hotmail.generateAndSendHotmail( rutaenviar, usuario, pass, textoEnviar, titulo);
+        hotmail.generateAndSendHotmail( rutaenviar, usuario, pass, textoEnviar, titulo, rutaFitxero);
 
         //hotmail.mostrarMensajes(usuario,pass);
 
